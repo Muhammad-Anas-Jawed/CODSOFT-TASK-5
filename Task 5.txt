@@ -1,0 +1,152 @@
+Course Database: Store course information, including course code, title, description, capacity, and schedule.
+ Student Database: Store student information, including student ID, name, and registered courses. 
+Course Listing: Display available courses with details and available slots. Student Registration: Allow students to register for courses from the available options. 
+Course Removal: Enable students to drop courses they have registered for. 
+INPUT:
+Course:
+import java.util.ArrayList;
+import java.util.List;
+
+class Course {
+    private String code;
+    private String title;
+    private String description;
+    private int capacity;
+    private List<Student> enrolledStudents;
+
+    public Course(String code, String title, String description, int capacity) {
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+        this.enrolledStudents = new ArrayList<>();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getAvailableSlots() {
+        return capacity - enrolledStudents.size();
+    }
+
+    public List<Student> getEnrolledStudents() {
+        return enrolledStudents;
+    }
+
+    public boolean enrollStudent(Student student) {
+        if (getAvailableSlots() > 0) {
+            enrolledStudents.add(student);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeStudent(Student student) {
+        return enrolledStudents.remove(student);
+    }
+
+    @Override
+    public String toString() {
+        return "Course Code: " + code + "\nTitle: " + title + "\nDescription: " + description +
+                "\nCapacity: " + capacity + "\nAvailable Slots: " + getAvailableSlots();
+    }
+}
+STUDENTS:
+
+import java.util.ArrayList;
+import java.util.List;
+
+class Student {
+    private int studentID;
+    private String name;
+    private List<Course> registeredCourses;
+
+    public Student(int studentID, String name) {
+        this.studentID = studentID;
+        this.name = name;
+        this.registeredCourses = new ArrayList<>();
+    }
+
+    public int getStudentID() {
+        return studentID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Course> getRegisteredCourses() {
+        return registeredCourses;
+    }
+
+    public boolean registerCourse(Course course) {
+        if (!registeredCourses.contains(course) && course.enrollStudent(this)) {
+            registeredCourses.add(course);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean dropCourse(Course course) {
+        if (registeredCourses.contains(course) && course.removeStudent(this)) {
+            registeredCourses.remove(course);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Student ID: " + studentID + "\nName: " + name;
+    }
+}
+COURSES  REGISTRATION SYSTEM:
+public class CourseRegistrationSystem {
+    public static void main(String[] args) {
+    
+        Course course1 = new Course("CSE101", "Introduction to Programming", "Programming fundamentals", 30);
+        Course course2 = new Course("MAT201", "Calculus I", "Limits, derivatives, and integrals", 40);
+        Course course3 = new Course("PHY301", "Applied Physics", "Physics", 35);
+    
+        Student student1 = new Student(278, "Muhammad Anas Jawed");
+        Student student2 = new Student(269, "Syed Hasnat Hussain");
+
+    
+        student1.registerCourse(course1);
+        student1.registerCourse(course2);
+        student2.registerCourse(course1);
+        student2.registerCourse(course2);
+        student1.registerCourse(course3);
+         student2.registerCourse(course3);
+    
+        System.out.println("Course Details:");
+        System.out.println(course1);
+        System.out.println("\n" + course2);
+        System.out.println("\n" + course3);
+
+    
+        System.out.println("\nStudent Details:");
+        System.out.println(student1);
+        System.out.println("\n" + student2);
+
+    
+         student1.dropCourse(course1);
+
+    
+        System.out.println("\nUpdated Course Details:");
+        System.out.println(course1);
+    }
+}
